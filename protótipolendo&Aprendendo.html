@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Lendo e Aprendendo</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #4cafef;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+    }
+    input {
+      width: 250px;
+      background: #1f1f1f;
+      color: #fff;
+    }
+    button {
+      background: #4cafef;
+      color: #fff;
+      cursor: pointer;
+    }
+    .livro {
+      background: #1f1f1f;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 Lendo e Aprendendo</h1>
+  <input type="text" id="busca" placeholder="Pesquisar livro ou autor...">
+  <button onclick="buscar()">Pesquisar</button>
+  <div id="resultados"></div>
+
+  <script>
+    let livros = [];
+
+    // Função para carregar CSV
+    async function carregarCSV() {
+      const response = await fetch("livros.csv"); // precisa estar na mesma pasta
+      const data = await response.text();
+
+      const linhas = data.split("\n").slice(1); // pula cabeçalho
+      livros = linhas.map(linha => {
+        const [titulo, autor, genero] = linha.split(",");
+        return { titulo, autor, genero };
+      });
+    }
+
+    // Função de busca
+    function buscar() {
+      const termo = document.getElementById("busca").value.toLowerCase();
+      const resultados = document.getElementById("resultados");
+      resultados.innerHTML = "";
+
+      livros.forEach(l => {
+        if (l.titulo?.toLowerCase().includes(termo) || l.autor?.toLowerCase().includes(termo)) {
+          const div = document.createElement("div");
+          div.className = "livro";
+          div.textContent = `📖 ${l.titulo} | ${l.autor} | ${l.genero}`;
+          resultados.appendChild(div);
+        }
+      });
+    }
+
+    carregarCSV(); // carrega livros ao abrir
+  </script>
+</body>
+</html>
